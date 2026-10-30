@@ -13,6 +13,9 @@ manual Samba/UNC mount to configure. Windows usernames, NTFS owners, and Chinese
 locale settings do not propagate into the container as file metadata. A process in
 the workspace sees Linux UIDs/GIDs, `/workspace`, and `/home/sandbox`.
 
+The optional SSH + SFTP transport used by native Claude Desktop has also been
+validated end to end on WSL2. See [DESKTOP.md](DESKTOP.md).
+
 ## macOS (adapted; needs on-device validation)
 
 The same container model applies: Docker Desktop runs a Linux VM, and the workspace

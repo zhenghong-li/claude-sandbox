@@ -20,6 +20,9 @@ Usage: ./sandbox [command] [args]
   pin --auto         resume automatic selection among US nodes
   import FILE.yaml   import nodes from a Clash/mihomo YAML file
   install-claude     install Claude Code into the persistent sandbox home
+  ssh-setup          configure optional host SSH and Claude Desktop access
+  ssh [args]         connect to the workspace through the host SSH alias
+  desktop            show native Claude Desktop setup instructions
   verify             check timezone, locale, DNS, and US egress
   verify --kill-switch
                      additionally prove that gateway failure causes no IP leak
@@ -163,6 +166,19 @@ case "$command" in
     start_stack
     docker exec -u "$SANDBOX_UID:$SANDBOX_GID" "$SANDBOX_CONTAINER" bash -lc \
       'if ! command -v claude >/dev/null; then curl -fsSL https://claude.ai/install.sh | bash; fi; claude --version'
+    ;;
+  ssh-setup)
+    start_stack
+    python3 "$HERE/scripts/ssh_setup.py"
+    ssh -T -o StrictHostKeyChecking=accept-new claude-sandbox 'id; echo HOME=$HOME; pwd'
+    printf 'quit\n' | sftp -b - -o StrictHostKeyChecking=accept-new claude-sandbox
+    ;;
+  ssh)
+    shift || true
+    ssh claude-sandbox "$@"
+    ;;
+  desktop)
+    cat "$HERE/docs/DESKTOP.md"
     ;;
   verify)
     shift || true

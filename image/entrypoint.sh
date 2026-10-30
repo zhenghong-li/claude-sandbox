@@ -39,6 +39,20 @@ EOF
 fi
 chown "$uid:$gid" "$HOME/.profile" "$HOME/.bashrc"
 
+# Optional SSH transport for Claude Desktop. No SSH port is published and no
+# daemon starts at boot; each connection invokes sshd through docker exec.
+mkdir -p /run/sshd "$HOME/.ssh"
+if [ ! -f "$HOME/.ssh/ssh_host_ed25519_key" ]; then
+  ssh-keygen -q -t ed25519 -N '' -f "$HOME/.ssh/ssh_host_ed25519_key"
+fi
+if [ ! -f "$HOME/.ssh/authorized_keys" ]; then
+  touch "$HOME/.ssh/authorized_keys"
+fi
+usermod -p "*" "$user_name"
+chown -R "$uid:$gid" "$HOME/.ssh"
+chmod 700 "$HOME/.ssh"
+chmod 600 "$HOME/.ssh/ssh_host_ed25519_key" "$HOME/.ssh/authorized_keys"
+
 printf '== US Sandbox ==\nTunnel: '
 up=0
 for _ in $(seq 1 45); do

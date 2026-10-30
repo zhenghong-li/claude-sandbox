@@ -13,7 +13,7 @@ RUN if [ -n "$APT_MIRROR" ]; then \
     && apt-get update && apt-get install -y --no-install-recommends \
       tzdata locales ca-certificates curl git python3 python3-pip \
       python3-venv python3-yaml util-linux \
-      inotify-tools file iproute2 dnsutils jq less nano openssh-client \
+      inotify-tools file iproute2 dnsutils jq less nano openssh-client openssh-server \
     && ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime \
     && echo 'America/Los_Angeles' > /etc/timezone \
     && dpkg-reconfigure -f noninteractive tzdata \
@@ -24,6 +24,7 @@ RUN if [ -n "$APT_MIRROR" ]; then \
     && rm -rf /var/lib/apt/lists/*
 
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY sshd_sandbox_config /etc/ssh/sshd_sandbox_config
+RUN chmod +x /entrypoint.sh && mkdir -p /run/sshd
 WORKDIR /workspace
 ENTRYPOINT ["/entrypoint.sh"]

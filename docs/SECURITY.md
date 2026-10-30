@@ -32,6 +32,16 @@ the sandbox's US egress. No host GitHub or SSH credentials are required or copie
 this package. If you later push code from inside the sandbox, configure credentials
 there deliberately; `state/home/` is persistent but is not a secrets manager.
 
+## Optional SSH/Desktop transport
+
+`./sandbox ssh-setup` creates a dedicated client key in the host's `~/.ssh` and adds
+its public key to the persistent sandbox home. No private key or host GitHub token
+is copied into a container. The SSH server uses public-key authentication only,
+disables password and root login, publishes no port, and starts only for the
+lifetime of a `docker exec` connection. The client still needs host Docker access,
+which is equivalent to host-level control; do not expose the Docker socket or the
+alias to untrusted users. Server and client keys live outside git.
+
 ## Gateway privileges
 
 The gateway has `NET_ADMIN` and `/dev/net/tun` because TUN cannot work without them.

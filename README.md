@@ -50,7 +50,7 @@ cd claude-sandbox
 **Windows:** open Docker Desktop → Settings → Resources → WSL Integration, and enable
 your WSL distro. Run the rest inside that distro.
 
-**macOS:** start Docker Desktop and wait for the engine to be ready. See [macOS sandbox configuration principles](docs/MACOS.md) for the container, file-sharing, permissions, and persistence model.
+**macOS:** start Docker Desktop and wait for the engine to be ready.
 
 If Docker Hub is slow on your network, configure a registry mirror in Docker Desktop
 before building. apt uses the Ubuntu archive by default; set `APT_MIRROR` in `.env`
@@ -99,9 +99,20 @@ The first `claude` login opens an OAuth URL in your browser. Complete it through
 browser that uses the same US-region network path. Login state persists in
 `state/home/`, which is never committed.
 
-## Optional SSH and Claude Desktop
+## Optional Claude Desktop
 
-See [SSH access and Claude Desktop](docs/SSH_DESKTOP.md) for a manual extension using Docker as the SSH transport. The default installer does not enable SSH; this extension still needs end-to-end validation.
+Use the native Desktop UI on the host with the sandbox as the remote execution
+environment (recommended over running Electron inside a container):
+
+```bash
+./sandbox ssh-setup
+```
+
+This configures a host SSH alias, a dedicated key, and the per-connection SSH/SFTP
+transport, then tests both. In Claude Desktop's Code tab, add an SSH environment
+named `claude-sandbox` and select `/workspace`. No SSH port is published.
+See [DESKTOP.md](docs/DESKTOP.md) for the native Linux/macOS installation,
+connection model, and troubleshooting.
 
 ## Stable exit IP
 
@@ -149,6 +160,9 @@ force every newly created file to be English. Logs are in `state/langwatch.log`.
 | `./sandbox pin "NAME"` / `pin --auto` | Pin a stable exit node / resume auto-selection |
 | `./sandbox import FILE.yaml` | Import nodes from a Clash/mihomo YAML file |
 | `./sandbox install-claude` | Install Claude Code in the persistent home |
+| `./sandbox ssh-setup` | Configure and test optional host SSH/Desktop access |
+| `./sandbox ssh` | Open a terminal through the host SSH alias |
+| `./sandbox desktop` | Print native Desktop setup instructions |
 | `./sandbox verify` | Check timezone, locale, DNS, and egress |
 | `./sandbox verify --kill-switch` | Also test that gateway failure causes no leak |
 | `./sandbox watch ...` | Manage the English-only file monitor |
