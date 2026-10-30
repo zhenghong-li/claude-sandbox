@@ -50,7 +50,7 @@ cd claude-sandbox
 **Windows:** open Docker Desktop → Settings → Resources → WSL Integration, and enable
 your WSL distro. Run the rest inside that distro.
 
-**macOS:** start Docker Desktop and wait for the engine to be ready.
+**macOS:** start Docker Desktop and wait for the engine to be ready. See [macOS sandbox configuration principles](docs/MACOS.md) for the container, file-sharing, permissions, and persistence model.
 
 If Docker Hub is slow on your network, configure a registry mirror in Docker Desktop
 before building. apt uses the Ubuntu archive by default; set `APT_MIRROR` in `.env`
@@ -98,6 +98,10 @@ Install Claude Code into the persistent sandbox home:
 The first `claude` login opens an OAuth URL in your browser. Complete it through a
 browser that uses the same US-region network path. Login state persists in
 `state/home/`, which is never committed.
+
+## Optional SSH and Claude Desktop
+
+See [SSH access and Claude Desktop](docs/SSH_DESKTOP.md) for a manual extension using Docker as the SSH transport. The default installer does not enable SSH; this extension still needs end-to-end validation.
 
 ## Stable exit IP
 
